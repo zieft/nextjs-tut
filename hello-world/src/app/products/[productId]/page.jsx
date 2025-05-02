@@ -1,3 +1,23 @@
+import { Metadata } from "next";
+
+
+// 导出一个名为 generateMetadata 的异步函数
+// export const: 导出一个命名常量，使其他文件可以导入此函数
+// async: 声明这是一个异步函数，可以在其中使用 await
+// generateMetadata这个变量名是Next.js的约定写法（钩子），不能替换成别的
+export const generateMetadata = async ({ params }) => {
+    // { params }: 参数解构，直接从函数参数中提取 params 对象
+    // 从 params 对象中提取 productId 属性
+    const id = (await params).productId
+    // return 返回一个对象，包含页面的元数据信息
+    // 这个对象会被 Next.js 用来设置页面的 <title> 标签
+    return {
+        // 使用模板字符串 (`) 动态组合字符串，插入变量值
+        // ${id}: 在字符串中插入 id 变量的值
+        title: `Product ${id}`
+    }
+}
+
 
 /*
 export default async function ProductDetail({ params }: {
