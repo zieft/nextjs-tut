@@ -1,29 +1,38 @@
+"use client"
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const navLinks = [
     { name: "Register", href: "/register" },
     { name: "Login", href: "/login" },
-    { name: "Forgot Password", href: "forgot-password" }
+    { name: "Forgot Password", href: "/forgot-password" }
 ]
 
 export default function AuthLayout({ children }) {
+    const pathname = usePathname() //usePathname返回当前所处的URL
     return (
         <div>
-            {/* 使用 map 方法遍历 navLinks 数组，为每个链接项生成导航元素 */}
             {navLinks.map((link) => {
+                // 判断当前路径是否匹配链接，确定链接是否为"激活"状态
+                // pathname === link.href：精确匹配当前路径与链接路径
+                // pathname.startsWith(link.href) && link.href !== '/'：判断是否为子路径且排除根路径'/'
+                // 例如：如果当前在'/login/reset'，则'/login'链接也会显示为激活状态
+                const isActive = pathname === link.href || (pathname.startsWith(link.href) && link.href !== '/')
                 return (
-                    /* Link 组件：Next.js 内置的导航组件，用于页面间无刷新跳转 */
-                    /* href 属性：设置链接的目标路径 */
-                    /* key 属性：React 需要的唯一标识符，用于优化列表渲染性能 */
-                    <Link href={link.href} key={link.name}>
-                        {/* 显示链接文本，使用 link 对象中的 name 属性 */}
+                    <Link
+                        // 使用三元运算符根据链接激活状态动态设置CSS类名
+                        // isActive为true时：应用"font-bold mr-4"样式（粗体字，右边距4单位）
+                        // isActive为false时：应用"text-blue-500 mr-4"样式（蓝色文本，右边距4单位）
+                        // 这种方式可以在用户导航时提供视觉反馈，高亮当前所在页面的导航链接
+                        className={isActive ? "font-bold mr-4" : "text-blue-500 mr-4"}
+                        href={link.href}
+                        key={link.name}
+                    >
                         {link.name}
                     </Link>
                 )
             })}
-            {/* children 属性：渲染嵌套路由的内容 */}
-            {/* 在 Next.js 中，这将显示当前路由对应的页面组件 */}
-            {/* 这是组件组合的关键，允许布局和页面内容分离 */}
             {children}
         </div>
     )
