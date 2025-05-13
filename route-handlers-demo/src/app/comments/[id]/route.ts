@@ -35,3 +35,27 @@ export async function PATCH(
     // 返回更新后的评论对象
     return Response.json(comments[index])
 }
+
+// DELETE 请求处理函数：用于删除指定 id 的评论
+// _request: 包含请求信息的 Request 对象（下划线表示此参数未使用）
+// params: 包含路由参数的对象，其中 id 是字符串类型
+export async function DELETE(
+    _request: Request,
+    {params}: { params: Promise<{ id: string }> }
+) {
+    // 从路由参数中获取要删除的评论 id
+    const {id} = await params
+    
+    // 在 comments 数组中查找指定 id 的评论的索引位置
+    const index = comments.findIndex((comment) => comment.id === parseInt(id))
+    
+    // 保存被删除评论的文本内容，用于返回给客户端
+    const deletedComment = comments[index].text
+    
+    // 使用 splice() 方法从数组中删除指定索引位置的评论
+    // splice(index, 1) 表示从 index 位置开始删除 1 个元素
+    comments.splice(index, 1)
+    
+    // 返回被删除评论的文本内容
+    return Response.json(deletedComment)
+}
